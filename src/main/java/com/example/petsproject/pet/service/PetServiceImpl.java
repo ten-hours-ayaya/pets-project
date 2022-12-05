@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
 
-    private final PetRepository<Pet, Integer> petRepository;
+    private final PetRepository petRepository;
 
     @Nonnull
     @Override
@@ -32,7 +32,7 @@ public class PetServiceImpl implements PetService {
     @Nonnull
     @Override
     public PetResponse getById(@Nonnull Integer id) {
-        return ofNullable(petRepository.findById(id))
+        return petRepository.findById(id)
                 .map(this::buildPetResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Pet '" + id + "' not found"));
     }
@@ -49,7 +49,7 @@ public class PetServiceImpl implements PetService {
     @Nonnull
     @Override
     public PetResponse update(@Nonnull Integer id, @Nonnull CreatePetRequest request) {
-        Pet pet = ofNullable(petRepository.findById(id))
+        Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pet '" + id + "' not found"));
 
         ofNullable(request.getName()).ifPresent(pet::setName);
@@ -61,7 +61,7 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public void delete(@Nonnull Integer id) {
-        petRepository.delete(id);
+        petRepository.deleteById(id);
     }
 
     private PetResponse buildPetResponse(Pet pet) {
